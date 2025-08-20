@@ -1,14 +1,17 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
   const { email, password } = await req.json();
 
   if (!email || !password) {
     return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
   }
+  
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
 
   // Check for domain restriction
   const { data: setting, error: settingError } = await supabase
@@ -31,9 +34,7 @@ export async function POST(req: NextRequest) {
     password,
     options: {
         data: {
-            role: 'TeamMember', // Default role
-            profile_complete: false, // Custom metadata
-            onboarding_complete: false,
+            profile_complete: false,
         }
     }
   });
@@ -43,13 +44,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: authError.message }, { status: authError.status || 400 });
   }
 
+  // The authData.user object is returned regardless of whether email confirmation is enabled.
+  // The authData.session object is only returned when email confirmation is disabled.
   if (!authData.user) {
-    return NextResponse.json({ message: 'Signup successful, but no user data returned.' }, { status: 500 });
+    return NextResponse.json({ message: 'Signup process initiated, but no user data returned. Please check logs.' }, { status: 500 });
   }
 
   // A trigger in Supabase now handles inserting the user into the public.users table.
-  // This ensures consistency. The trigger is defined in the initial setup SQL.
-  // So, the explicit insert call here is no longer needed.
+  // The trigger sets default values for role ('TeamMember') and profile_complete (false).
+  // So, no explicit insert or update call is needed here.
 
   return NextResponse.json({ message: 'User created successfully. Please check your email to verify.' }, { status: 201 });
 }

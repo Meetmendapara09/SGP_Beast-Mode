@@ -1,17 +1,24 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, KanbanSquare, Users, Shapes, ClipboardList, Shield, MessageSquare, Video, LayoutDashboard, Loader2 } from 'lucide-react';
+import { ArrowRight, KanbanSquare, Users, Shapes, ClipboardList, Shield, MessageSquare, Video, LayoutDashboard, User, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import LogoutButton from '@/components/world/LogoutButton';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import TourGuide from '@/components/TourGuide';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AnimatedCard } from '@/components/AnimatedCard';
+import { cookies } from 'next/headers';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import LogoutButton from '@/components/world/LogoutButton';
+
 
 async function getUserData() {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
@@ -79,14 +86,41 @@ async function Dashboard() {
     }
 
     const isAdmin = user.role === 'Admin';
+    const userInitial = user.first_name ? user.first_name.charAt(0) : user.email.charAt(0);
+
     return (
         <div className="flex flex-col min-h-screen bg-background">
              <TourGuide isAdmin={isAdmin} />
             <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-                <h1 id="tour-logo" className="text-2xl font-bold text-primary font-headline">SyncroSpace</h1>
+                <h1 id="tour-logo" className="text-2xl font-bold text-primary font-headline tracking-wider">SyncroSpace</h1>
                  <div id="tour-header-buttons" className="flex items-center gap-4">
                     <ThemeToggle />
-                    <LogoutButton />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                                <Avatar className="h-10 w-10">
+                                    <AvatarImage src="https://placehold.co/40x40.png" alt={user.email} />
+                                    <AvatarFallback>{userInitial.toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end" forceMount>
+                            <DropdownMenuLabel className="font-normal">
+                                <div className="flex flex-col space-y-1">
+                                    <p className="text-sm font-medium leading-none">{user.first_name || 'User'}</p>
+                                    <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                                </div>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem asChild>
+                                <Link href="/profile"><User className="mr-2 h-4 w-4" />Profile</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                               <LogoutButton />
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                  </div>
             </header>
             <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -95,7 +129,7 @@ async function Dashboard() {
                     <p className="text-muted-foreground">What would you like to do today?</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <Card id="tour-world" className="hover:shadow-lg transition-all hover:-translate-y-1">
+                    <AnimatedCard id="tour-world">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                 <Users className="text-accent" />
@@ -112,8 +146,8 @@ async function Dashboard() {
                             </Button>
                            </Link>
                         </CardContent>
-                    </Card>
-                     <Card id="tour-chat" className="hover:shadow-lg transition-all hover:-translate-y-1">
+                    </AnimatedCard>
+                     <AnimatedCard id="tour-chat">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                <MessageSquare className="text-accent" />
@@ -130,8 +164,8 @@ async function Dashboard() {
                                 </Button>
                             </Link>
                         </CardContent>
-                    </Card>
-                     <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                    </AnimatedCard>
+                     <AnimatedCard>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                <Video className="text-accent" />
@@ -148,8 +182,8 @@ async function Dashboard() {
                                 </Button>
                             </Link>
                         </CardContent>
-                    </Card>
-                     <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                    </AnimatedCard>
+                     <AnimatedCard>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                <Shapes className="text-accent" />
@@ -166,8 +200,8 @@ async function Dashboard() {
                                 </Button>
                             </Link>
                         </CardContent>
-                    </Card>
-                     <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                    </AnimatedCard>
+                     <AnimatedCard>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                                <ClipboardList className="text-accent" />
@@ -184,8 +218,8 @@ async function Dashboard() {
                                 </Button>
                             </Link>
                         </CardContent>
-                    </Card>
-                    <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                    </AnimatedCard>
+                    <AnimatedCard>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
                             <KanbanSquare className="text-accent" />
@@ -202,10 +236,10 @@ async function Dashboard() {
                                 </Button>
                             </Link>
                         </CardContent>
-                    </Card>
+                    </AnimatedCard>
                     {isAdmin && (
                         <>
-                            <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                            <AnimatedCard>
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-3">
                                         <LayoutDashboard className="text-accent" />
@@ -222,8 +256,8 @@ async function Dashboard() {
                                         </Button>
                                     </Link>
                                 </CardContent>
-                            </Card>
-                            <Card id="tour-admin" className="hover:shadow-lg transition-all hover:-translate-y-1">
+                            </AnimatedCard>
+                            <AnimatedCard id="tour-admin">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-3">
                                     <Shield className="text-accent" />
@@ -240,7 +274,7 @@ async function Dashboard() {
                                         </Button>
                                     </Link>
                                 </CardContent>
-                            </Card>
+                            </AnimatedCard>
                         </>
                     )}
                 </div>

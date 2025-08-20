@@ -1,16 +1,17 @@
-
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { cookies } from 'next/headers';
 
 const domainRestrictionSchema = z.object({
   domain: z.string().nullable(),
 });
 
 // Helper function to check admin role
-async function checkAdmin(supabase: ReturnType<typeof createClient>) {
+async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
+  const supabase = createClient(cookieStore);
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     throw new Error('Not authenticated');
@@ -33,9 +34,10 @@ async function checkAdmin(supabase: ReturnType<typeof createClient>) {
 
 // GET the current domain restriction setting
 export async function GET(req: NextRequest) {
-  const supabase = createClient();
   try {
-    await checkAdmin(supabase);
+    const cookieStore = cookies();
+    await checkAdmin(cookieStore);
+    const supabase = createClient(cookieStore);
 
     const { data, error } = await supabase
       .from('settings')
@@ -59,9 +61,10 @@ export async function GET(req: NextRequest) {
 
 // POST to update the domain restriction setting
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
   try {
-    await checkAdmin(supabase);
+    const cookieStore = cookies();
+    await checkAdmin(cookieStore);
+    const supabase = createClient(cookieStore);
 
     const body = await req.json();
     const parseResult = domainRestrictionSchema.safeParse(body);

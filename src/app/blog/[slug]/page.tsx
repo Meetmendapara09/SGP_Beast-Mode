@@ -9,14 +9,14 @@ import Image from 'next/image';
 
 // Generate static pages for each blog post
 export async function generateStaticParams() {
-  const posts = getAllPosts();
+  const posts = await getAllPosts();
   return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = getPostBySlug(params.slug);
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const post = await getPostBySlug(params.slug);
 
   if (!post) {
     notFound();
@@ -26,7 +26,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center border-b">
         <Link href="/">
-          <h1 className="text-2xl font-bold text-primary font-headline">SyncroSpace</h1>
+          <h1 className="text-2xl font-bold text-primary font-headline tracking-wider">SyncroSpace</h1>
         </Link>
         <div>
             <Link href="/blog">
@@ -48,7 +48,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                       data-ai-hint={post.imageHint}
                     />
                 </div>
-              <CardTitle className="text-4xl md:text-5xl font-extrabold font-headline leading-tight tracking-tight">
+              <CardTitle className="text-4xl md:text-5xl font-extrabold font-headline leading-tight tracking-wide">
                 {post.title}
               </CardTitle>
               <CardDescription className="mt-4 flex items-center gap-6 text-base">
@@ -61,7 +61,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar className="h-5 w-5" />
-                  <span>{post.date}</span>
+                  <span>{new Date(post.date).toLocaleDateString()}</span>
                 </div>
               </CardDescription>
             </CardHeader>

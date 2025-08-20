@@ -56,8 +56,8 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const publicRoutes = ['/', '/about', '/privacy-policy', '/terms-of-service', '/features', '/pricing', '/contact', '/documentation', '/faq', '/blog'];
-  const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname.startsWith(route) && route !== '/') || request.nextUrl.pathname === '/' || request.nextUrl.pathname.startsWith('/careers');
+  const publicRoutes = ['/', '/about', '/privacy-policy', '/terms-of-service', '/features', '/pricing', '/contact', '/documentation', '/faq', '/blog', '/careers'];
+  const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname.startsWith(route) && route !== '/') || request.nextUrl.pathname === '/';
   
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup') || request.nextUrl.pathname.startsWith('/forgot-password');
 
@@ -74,27 +74,12 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url)
     }
 
-    const { data: userData } = await supabase.from('users').select('onboarding_complete, profile_complete, role').eq('id', user.id).single();
+    const { data: userData } = await supabase.from('users').select('profile_complete, role').eq('id', user.id).single();
 
     if (userData) {
-      // If onboarding is not complete, redirect to /onboarding.
-      if (!userData.onboarding_complete && request.nextUrl.pathname !== '/onboarding') {
-        const url = request.nextUrl.clone()
-        url.pathname = '/onboarding'
-        return NextResponse.redirect(url)
-      }
-      
-      // If onboarding is complete but profile is not, redirect to /profile.
-      if (userData.onboarding_complete && !userData.profile_complete && request.nextUrl.pathname !== '/profile') {
-        const url = request.nextUrl.clone()
-        url.pathname = '/profile'
-        return NextResponse.redirect(url)
-      }
-
-      // If everything is complete and user tries to access onboarding/profile, redirect to dashboard.
-      if (userData.onboarding_complete && userData.profile_complete && (request.nextUrl.pathname === '/profile' || request.nextUrl.pathname === '/onboarding')) {
+      if (!userData.profile_complete && request.nextUrl.pathname !== '/profile') {
           const url = request.nextUrl.clone()
-          url.pathname = '/dashboard'
+          url.pathname = '/profile'
           return NextResponse.redirect(url)
       }
     }

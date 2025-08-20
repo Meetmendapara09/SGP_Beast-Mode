@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -5,9 +6,12 @@ import { ArrowRight, LogIn, UserPlus, Users, Volume2, MessageSquare, Video, Kanb
 import LogoutButton from '@/components/world/LogoutButton';
 import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
+import { AnimatedCard } from '@/components/AnimatedCard';
+import { cookies } from 'next/headers';
 
 async function IsAuthenticated() {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const { data: { session } } = await supabase.auth.getSession();
     return !!session;
 }
@@ -18,7 +22,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-primary font-headline">SyncroSpace</h1>
+        <h1 className="text-2xl font-bold text-primary font-headline tracking-wider">SyncroSpace</h1>
         <nav className="flex items-center gap-2 sm:gap-4">
              {isAuthenticated && (
                 <Link href="/dashboard" passHref>
@@ -49,7 +53,7 @@ export default async function Home() {
       </header>
       <main className="flex-grow">
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 md:py-24">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4 font-headline leading-tight">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4 font-headline leading-tight tracking-wide">
             A new dimension for team collaboration.
           </h2>
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground mb-8">
@@ -71,11 +75,11 @@ export default async function Home() {
         <section className="bg-secondary/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
             <div className="text-center mb-12">
-                <h3 className="text-3xl font-bold font-headline">Everything You Need to Collaborate</h3>
+                <h3 className="text-3xl font-bold font-headline tracking-wide">Everything You Need to Collaborate</h3>
                 <p className="text-muted-foreground mt-2">All-in-one platform for a distributed team.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <Card className="text-left">
+              <AnimatedCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <Users className="text-accent h-6 w-6" />
@@ -87,8 +91,8 @@ export default async function Home() {
                     Explore a 2D world, move your avatar, and interact with colleagues in different rooms.
                   </p>
                 </CardContent>
-              </Card>
-              <Card className="text-left">
+              </AnimatedCard>
+              <AnimatedCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <Volume2 className="text-accent h-6 w-6" />
@@ -100,8 +104,8 @@ export default async function Home() {
                     Engage in natural conversations by hearing only those who are near you in the virtual space.
                   </p>
                 </CardContent>
-              </Card>
-              <Card className="text-left">
+              </AnimatedCard>
+              <AnimatedCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <MessageSquare className="text-accent h-6 w-6" />
@@ -113,8 +117,8 @@ export default async function Home() {
                     Communicate in real-time with one-to-one DMs and group channels.
                   </p>
                 </CardContent>
-              </Card>
-               <Card className="text-left">
+              </AnimatedCard>
+               <AnimatedCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <Video className="text-accent h-6 w-6" />
@@ -126,8 +130,8 @@ export default async function Home() {
                     Jump into audio/video calls with screen sharing for quick syncs or scheduled meetings.
                   </p>
                 </CardContent>
-              </Card>
-              <Card className="text-left">
+              </AnimatedCard>
+              <AnimatedCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <KanbanSquare className="text-accent h-6 w-6" />
@@ -139,8 +143,8 @@ export default async function Home() {
                     Organize work and track progress with a collaborative Kanban board.
                   </p>
                 </CardContent>
-              </Card>
-              <Card className="text-left">
+              </AnimatedCard>
+              <AnimatedCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <Shapes className="text-accent h-6 w-6" />
@@ -152,8 +156,8 @@ export default async function Home() {
                     Brainstorm ideas together in real-time on an infinite, collaborative canvas.
                   </p>
                 </CardContent>
-              </Card>
-              <Card className="text-left">
+              </AnimatedCard>
+              <AnimatedCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <ClipboardList className="text-accent h-6 w-6" />
@@ -165,8 +169,8 @@ export default async function Home() {
                     Gather feedback and make decisions quickly with team-wide surveys and polls.
                   </p>
                 </CardContent>
-              </Card>
-               <Card className="text-left">
+              </AnimatedCard>
+               <AnimatedCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <BarChart2 className="text-accent h-6 w-6" />
@@ -178,7 +182,7 @@ export default async function Home() {
                     Admins can view dashboards on team activity, engagement, and productivity.
                   </p>
                 </CardContent>
-              </Card>
+              </AnimatedCard>
             </div>
           </div>
         </section>
@@ -187,7 +191,7 @@ export default async function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 text-sm">
                 <div className="col-span-full sm:col-span-2 lg:col-span-1">
-                    <h3 className="font-bold text-lg text-foreground mb-2 font-headline">SyncroSpace</h3>
+                    <h3 className="font-bold text-lg text-foreground mb-2 font-headline tracking-wider">SyncroSpace</h3>
                     <p className="text-muted-foreground">A new dimension for team collaboration.</p>
                 </div>
                 <div>

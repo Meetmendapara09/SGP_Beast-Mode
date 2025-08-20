@@ -1,10 +1,12 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 // GET all Kanban data
 export async function GET(req: NextRequest) {
-  const supabase = createClient();
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return new NextResponse('Unauthorized', { status: 401 });
@@ -30,7 +32,10 @@ export async function GET(req: NextRequest) {
     const columns = columnsData.reduce((acc, column) => {
       acc[column.id] = {
         ...column,
-        taskIds: tasksData.filter(t => t.column_id === column.id).map(t => t.id)
+        taskIds: tasksData
+            .filter(t => t.column_id === column.id)
+            .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()) // Assuming you want them ordered by creation
+            .map(t => t.id)
       };
       return acc;
     }, {} as any);
@@ -46,7 +51,8 @@ export async function GET(req: NextRequest) {
 
 // POST a new task
 export async function POST(req: NextRequest) {
-  const supabase = createClient();
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return new NextResponse('Unauthorized', { status: 401 });
@@ -63,7 +69,6 @@ export async function POST(req: NextRequest) {
         content, 
         column_id: columnId, 
         assignee_id: user.id, 
-        due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
         priority: priority || 'Medium'
       })
       .select()
@@ -78,12 +83,16 @@ export async function POST(req: NextRequest) {
 
 // PUT (update) a task's position
 export async function PUT(req: NextRequest) {
-  const supabase = createClient();
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return new NextResponse('Unauthorized', { status: 401 });
 
     const { taskId, newColumnId } = await req.json();
+    if (!taskId || !newColumnId) {
+        return new NextResponse('Task ID and New Column ID are required', { status: 400 });
+    }
 
     const { error } = await supabase
       .from('tasks')
@@ -99,7 +108,8 @@ export async function PUT(req: NextRequest) {
 
 // DELETE a task
 export async function DELETE(req: NextRequest) {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return new NextResponse('Unauthorized', { status: 401 });
