@@ -1,7 +1,7 @@
 
 'use client';
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import React, { useEffect, useRef } from 'react';
 import { MainScene } from '@/lib/phaser/scenes/MainScene';
 import { realtimeService } from '@/services/RealtimeService';
@@ -50,7 +50,10 @@ export default function PhaserContainer({ user, onPlayerNearNpc, onPlayerFarNpc,
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: { y: 0 },
+          gravity: {
+            y: 0,
+            x: 0
+          },
         },
       },
       backgroundColor: 'hsl(var(--background))',
