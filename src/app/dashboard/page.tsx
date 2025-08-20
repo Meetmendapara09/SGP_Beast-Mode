@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, KanbanSquare, Users, Shapes, ClipboardList, Shield, MessageSquare, Video, LayoutDashboard, User, LogOut } from 'lucide-react';
@@ -15,9 +14,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import LogoutButton from '@/components/world/LogoutButton';
 
-
 async function getUserData() {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
@@ -26,7 +24,7 @@ async function getUserData() {
         .from('users')
         .select('id, email, role, profile_complete, first_name')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
     
     if (error) {
         console.error('Error fetching user data:', error);

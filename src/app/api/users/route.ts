@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   try {
     const { data: { user: requestingUser } } = await supabase.auth.getUser();
@@ -14,7 +14,7 @@ export async function GET() {
       .from('users')
       .select('role')
       .eq('id', requestingUser.id)
-      .single();
+      .maybeSingle();
       
     if (adminError || !adminUserData || adminUserData.role !== 'Admin') {
       return new NextResponse('Forbidden', { status: 403 });

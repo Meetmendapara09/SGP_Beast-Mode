@@ -26,7 +26,7 @@ const defaultResults = [
 
 
 export async function POST(req: NextRequest) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   
   try {
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       .from('surveys')
       .insert(newSurveyData)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error creating survey:', error);

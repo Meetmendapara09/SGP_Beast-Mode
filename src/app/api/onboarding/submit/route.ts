@@ -15,7 +15,7 @@ const onboardingSchema = z.object({
 const adminRoles = ['Founder or C-Level', 'Team Lead or Manager'];
 
 export async function POST(req: NextRequest) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 

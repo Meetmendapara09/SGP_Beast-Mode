@@ -126,7 +126,7 @@ export default function ChatPage() {
             return;
         }
         
-        const { data: userData, error: userError } = await supabase.from('users').select('*').eq('id', session.user.id).single();
+        const { data: userData, error: userError } = await supabase.from('users').select('*').eq('id', session.user.id).maybeSingle();
         if (userError) throw userError;
         if (isMounted) setCurrentUser(userData);
 

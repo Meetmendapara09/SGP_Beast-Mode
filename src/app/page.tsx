@@ -10,7 +10,7 @@ import { AnimatedCard } from '@/components/AnimatedCard';
 import { cookies } from 'next/headers';
 
 async function IsAuthenticated() {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { data: { session } } = await supabase.auth.getSession();
     return !!session;

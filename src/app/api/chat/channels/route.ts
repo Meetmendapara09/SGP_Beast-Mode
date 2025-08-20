@@ -12,7 +12,7 @@ const createChannelSchema = z.object({
 
 // GET all chat channels
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -36,7 +36,7 @@ export async function GET() {
 
 // POST a new chat channel
 export async function POST(req: NextRequest) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
         created_by: user.id,
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
     

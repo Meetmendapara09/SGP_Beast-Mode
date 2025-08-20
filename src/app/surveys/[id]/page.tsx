@@ -10,7 +10,7 @@ import SurveyDetailClient from './SurveyDetailClient';
 
 
 export default async function SurveyDetailPage({ params }: { params: { id: string }}) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const survey = await getSurveyById(supabase, params.id);
 

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
   }
   
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
   // Check for domain restriction
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     .from('settings')
     .select('value')
     .eq('id', 'domain_restriction')
-    .single();
+    .maybeSingle();
   
   if (setting && setting.value && (setting.value as any).domain) {
     const restrictedDomain = (setting.value as any).domain;

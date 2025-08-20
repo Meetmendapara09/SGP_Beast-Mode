@@ -30,7 +30,7 @@ export async function getJobById(id: string): Promise<JobOpening | null> {
         .from('job_openings')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
     
     if (error) {
         console.error(`Error fetching job ${id}:`, error.message);

@@ -74,7 +74,7 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url)
     }
 
-    const { data: userData } = await supabase.from('users').select('profile_complete, role').eq('id', user.id).single();
+    const { data: userData } = await supabase.from('users').select('profile_complete, role').eq('id', user.id).maybeSingle();
 
     if (userData) {
       if (!userData.profile_complete && request.nextUrl.pathname !== '/profile') {

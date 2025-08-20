@@ -43,7 +43,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
         .from('blog_posts')
         .select('*')
         .eq('slug', slug)
-        .single();
+        .maybeSingle();
     
     if (error) {
         console.error('Error fetching post by slug:', error.message);

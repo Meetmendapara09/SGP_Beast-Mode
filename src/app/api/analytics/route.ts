@@ -16,7 +16,7 @@ async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
     .from('users')
     .select('role')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (error || !userData) {
     throw new Error('Could not retrieve user role');
@@ -28,7 +28,7 @@ async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
 }
 
 export async function GET() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   try {
     // Ensure the user is an admin before proceeding

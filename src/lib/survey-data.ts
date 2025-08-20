@@ -90,7 +90,7 @@ export async function getAllSurveys(supabase: SupabaseClient): Promise<Survey[]>
 }
 
 export async function getSurveyById(supabase: SupabaseClient, id: string): Promise<Survey | null> {
-    const { data, error }: PostgrestSingleResponse<Survey> = await supabase.from('surveys').select('*').eq('id', id).single();
+    const { data, error }: PostgrestSingleResponse<Survey> = await supabase.from('surveys').select('*').eq('id', id).maybeSingle();
     
     if (error) {
         console.error("Error fetching survey:", error);

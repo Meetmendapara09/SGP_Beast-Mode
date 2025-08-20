@@ -11,7 +11,7 @@ const domainRestrictionSchema = z.object({
 
 // Helper function to check admin role
 async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
-  const supabase = createClient(cookieStore);
+  const supabase = createClient(await cookieStore);
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     throw new Error('Not authenticated');
@@ -21,7 +21,7 @@ async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
     .from('users')
     .select('role')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (error || !userData) {
     throw new Error('Could not retrieve user role');
@@ -37,15 +37,19 @@ export async function GET(req: NextRequest) {
   try {
     const cookieStore = cookies();
     await checkAdmin(cookieStore);
-    const supabase = createClient(cookieStore);
+    const supabase = createClient(await cookieStore);
 
     const { data, error } = await supabase
       .from('settings')
       .select('value')
       .eq('id', 'domain_restriction')
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
+
+    if (!data) {
+      return NextResponse.json({ message: 'Domain restriction setting not found' }, { status: 404 });
+    }
 
     return NextResponse.json(data.value);
   } catch (error: any) {
@@ -62,7 +66,7 @@ export async function GET(req: NextRequest) {
 // POST to update the domain restriction setting
 export async function POST(req: NextRequest) {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     await checkAdmin(cookieStore);
     const supabase = createClient(cookieStore);
 

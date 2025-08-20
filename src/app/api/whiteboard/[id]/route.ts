@@ -8,7 +8,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const whiteboardId = params.id;
 
@@ -20,7 +20,7 @@ export async function GET(
       .from('whiteboards')
       .select('content')
       .eq('id', whiteboardId)
-      .single();
+      .maybeSingle();
 
     if (error) {
       // If no whiteboard exists, we can create one on the fly for this demo
@@ -29,7 +29,7 @@ export async function GET(
             .from('whiteboards')
             .insert({ id: whiteboardId, title: 'Default Whiteboard', content: [] })
             .select('content')
-            .single();
+            .maybeSingle();
         if (newError) throw newError;
         return NextResponse.json(newData);
       }
@@ -52,7 +52,7 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const whiteboardId = params.id;
 

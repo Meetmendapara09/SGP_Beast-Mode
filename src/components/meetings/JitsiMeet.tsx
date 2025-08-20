@@ -28,7 +28,7 @@ const JitsiMeet: React.FC<JitsiMeetProps> = ({ roomName, onMeetingEnd }) => {
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-            const { data: userData } = await supabase.from('users').select('first_name, email').eq('id', user.id).single();
+            const { data: userData } = await supabase.from('users').select('first_name, email').eq('id', user.id).maybeSingle();
             setDisplayName(userData?.first_name || userData?.email || 'Guest');
         }
     };

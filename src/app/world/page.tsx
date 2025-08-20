@@ -119,7 +119,7 @@ export default function WorldPage() {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) { router.push('/login'); return; }
 
-        const { data: userData, error } = await supabase.from('users').select('id, email, role, last_x, last_y').eq('id', session.user.id).single();
+        const { data: userData, error } = await supabase.from('users').select('id, email, role, last_x, last_y').eq('id', session.user.id).maybeSingle();
         if (error || !userData) {
             console.error("Failed to fetch user data", error);
             toast({ variant: 'destructive', title: 'Authentication Error', description: 'Could not fetch your profile.' });

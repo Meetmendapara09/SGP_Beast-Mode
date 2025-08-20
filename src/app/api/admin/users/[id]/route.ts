@@ -20,7 +20,7 @@ async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
     .from('users')
     .select('role')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (error || !userData) {
     throw new Error('Could not retrieve user role');
@@ -39,7 +39,7 @@ export async function PUT(
   const targetUserId = params.id;
 
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     await checkAdmin(cookieStore);
     const supabase = createClient(cookieStore);
 
@@ -85,7 +85,7 @@ export async function DELETE(
   const targetUserId = params.id;
 
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     await checkAdmin(cookieStore);
     const supabase = createClient(cookieStore);
 

@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 
 // GET all Kanban data
 export async function GET(req: NextRequest) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
 
 // POST a new task
 export async function POST(req: NextRequest) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
         priority: priority || 'Medium'
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
     return NextResponse.json(data);
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
 
 // PUT (update) a task's position
 export async function PUT(req: NextRequest) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -108,7 +108,7 @@ export async function PUT(req: NextRequest) {
 
 // DELETE a task
 export async function DELETE(req: NextRequest) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     try {
         const { data: { user } } = await supabase.auth.getUser();

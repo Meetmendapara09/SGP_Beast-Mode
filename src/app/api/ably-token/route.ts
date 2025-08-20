@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         }, { status: 500 });
     }
     
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { data: { session } } = await supabase.auth.getSession();
     

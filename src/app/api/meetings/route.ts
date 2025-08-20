@@ -5,7 +5,7 @@ import { startOfDay, endOfDay } from 'date-fns';
 import { cookies } from 'next/headers';
 
 export async function GET(req: NextRequest) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return new NextResponse('Unauthorized', { status: 401 });
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
 
 
 export async function POST(req: NextRequest) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return new NextResponse('Unauthorized', { status: 401 });
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
                 organizer_id: user.id
             })
             .select()
-            .single();
+            .maybeSingle();
         
         if (error) throw error;
 

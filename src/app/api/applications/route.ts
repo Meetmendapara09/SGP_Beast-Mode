@@ -17,7 +17,7 @@ const applicationSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
     
     // In a real-world scenario, you might want to protect this endpoint,
