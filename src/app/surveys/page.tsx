@@ -21,8 +21,8 @@ import { cookies } from 'next/headers';
 import SurveysClient from './SurveysClient';
 
 export default async function SurveysPage() {
-    const cookieStore = await cookies();
-    const supabase = createClient(Promise.resolve(cookieStore));
+  const cookieStore = await cookies();
+  const supabase = createClient(Promise.resolve(cookieStore));
     const surveys = await getAllSurveys(supabase);
 
     return <SurveysClient surveys={surveys} />;
