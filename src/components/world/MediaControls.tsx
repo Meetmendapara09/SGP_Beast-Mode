@@ -12,13 +12,13 @@ interface MediaControlsProps {
 }
 
 export default function MediaControls({ stream, hasPermission }: MediaControlsProps) {
-  const [audioState, setAudioState] = useState<'suspended' | 'running' | 'closed'>('suspended');
+  const [audioState, setAudioState] = useState<'suspended' | 'running' | 'closed' | 'interrupted'>('suspended');
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
 
   useEffect(() => {
     const updateState = () => {
-      if (Tone.context) setAudioState(Tone.context.state);
+      if (Tone.getContext()) setAudioState(Tone.getContext().state);
     };
     updateState();
     const interval = setInterval(updateState, 500);

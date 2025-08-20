@@ -3,8 +3,8 @@
 
 import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import type * as Ably from 'ably';
-
+import type { Message as AblyMessage } from 'ably';
+import { PresenceMessage } from 'ably';
 import Chat, { type Message } from '@/components/world/Chat';
 import { CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -59,7 +59,7 @@ export default function WorldPage() {
       'pixel-space': [{ author: 'System', text: 'Welcome to SyncroSpace! Use WASD or arrow keys to move.' }]
   });
 
-  const [onlineUsers, setOnlineUsers] = useState<Ably.Types.PresenceMessage[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<PresenceMessage[]>([]);
   const [currentUser, setCurrentUser] = useState<{ email: string, id: string, role: UserRole, last_x: number, last_y: number } | null>(null);
   const { toast } = useToast();
   const sceneRef = useRef<MainScene | null>(null);
@@ -151,7 +151,7 @@ export default function WorldPage() {
     if (!currentUser) return;
     let isSubscribed = true;
 
-    const handleNewMessage = (ablyMessage: Ably.Types.Message, channelId: string) => {
+    const handleNewMessage = (ablyMessage: AblyMessage, channelId: string) => {
         if (!isSubscribed) return;
         const authorEmail = (ablyMessage.data.author || 'Anonymous');
         const author = authorEmail === currentUser.email ? 'You' : authorEmail;
@@ -163,9 +163,9 @@ export default function WorldPage() {
         });
     };
     
-    const handlePresenceUpdate = (presenceMessage?: Ably.Types.PresenceMessage) => {
+    const handlePresenceUpdate = (presenceMessage?: PresenceMessage) => {
        if (!isSubscribed) return;
-       realtimeService.getPresence('pixel-space', (err, members) => {
+       realtimeService.getPresence('pixel-space', (err: Error | null, members: PresenceMessage[]) => {
            if (!err && members) {
                setOnlineUsers(members);
                if (presenceMessage?.action === 'enter') {
@@ -183,7 +183,7 @@ export default function WorldPage() {
        });
     };
     
-    const handleHistory = (history: Ably.Types.Message[], channelId: string) => {
+    const handleHistory = (history: AblyMessage[], channelId: string) => {
       if (!isSubscribed) return;
       const pastMessages: Message[] = history.map(message => {
         const authorEmail = (message.data.author || 'Anonymous');
@@ -193,7 +193,7 @@ export default function WorldPage() {
       setMessages(prev => ({ ...prev, [channelId]: [...pastMessages.reverse()] }));
     };
     
-    const handlePlayerUpdate = (message: Ably.Types.Message) => {
+    const handlePlayerUpdate = (message: AblyMessage) => {
         if (!isSubscribed) return;
         const data = message.data as PlayerUpdateData;
         if (data.payload.clientId !== currentUser.id) {

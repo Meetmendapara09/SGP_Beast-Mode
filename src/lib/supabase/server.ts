@@ -9,22 +9,16 @@ export const createClient = (cookieStore: ReturnType<typeof cookies>) => {
     {
       cookies: {
         async get(name: string) {
-          return (await cookieStore).get(name)?.value
+          const allCookies = await cookieStore;
+          const cookie = allCookies.get(name);
+          return cookie?.value || null;
         },
         async set(name: string, value: string, options: CookieOptions) {
           try {
-            (await cookieStore).set({ name, value, ...options })
+            const cookieStoreInstance = await cookieStore;
+            cookieStoreInstance.set({ name, value, ...options });
           } catch (error) {
             // The `set` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
-        async remove(name: string, options: CookieOptions) {
-          try {
-            (await cookieStore).set({ name, value: '', ...options })
-          } catch (error) {
-            // The `delete` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
             // user sessions.
           }

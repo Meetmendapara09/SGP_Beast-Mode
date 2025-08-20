@@ -16,7 +16,7 @@ import LogoutButton from '@/components/world/LogoutButton';
 
 async function getUserData() {
     const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = createClient(Promise.resolve(cookieStore));
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 

@@ -100,7 +100,7 @@ export class MainScene extends Phaser.Scene {
 
   private savePosition = () => {
     if (this.player && this.player.body) {
-      const { x, y } = this.player.body;
+      const { x, y } = this.player.body as Phaser.Physics.Arcade.Body;
       navigator.sendBeacon('/api/world/update-position', JSON.stringify({ x, y }));
     }
   }
@@ -130,13 +130,18 @@ export class MainScene extends Phaser.Scene {
   create() {
     const map = this.make.tilemap({ key: 'map' });
     const tileset = map.addTilesetImage('tileset', 'tiles'); // 'tileset' should match the name in Tiled
+    if (!tileset) {
+        throw new Error("Tileset 'tileset' could not be loaded. Please check the tileset name and path.");
+    }
     
     // Create layers
     const groundLayer = map.createLayer('Ground', tileset, 0, 0);
     const wallsLayer = map.createLayer('Walls', tileset, 0, 0);
 
     // Set collision for the walls layer
-    wallsLayer.setCollisionByProperty({ collides: true });
+    if (wallsLayer) {
+        wallsLayer.setCollisionByProperty({ collides: true });
+    }
     
     const playerColor = 0xF7B733;
     const npcColor = 0x9ca3af;
@@ -155,9 +160,11 @@ export class MainScene extends Phaser.Scene {
     // Find objects from Tiled
     const npcObject = map.findObject('Objects', obj => obj.name === "NPC");
     if (npcObject && npcObject.x && npcObject.y) {
-        this.npc = this.add.circle(npcObject.x, npcObject.y, 10, npcColor);
+        this.npc = this.add.circle(npcObject.x, npcObject.y, 10, npcColor) as Phaser.Types.Physics.Arcade.GameObjectWithBody & Phaser.GameObjects.Shape;
         this.physics.add.existing(this.npc);
-        this.npc.body.setImmovable(true);
+        (this.npc.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+        this.physics.add.existing(this.npc);
+        this.npc.body.immovable = true;
         this.add.text(npcObject.x - 15, npcObject.y - 30, 'Alex', { font: '14px VT323', color: 'hsl(var(--foreground))' });
         
         const nearZone = this.add.zone(npcObject.x, npcObject.y, 150, 150);
@@ -181,7 +188,9 @@ export class MainScene extends Phaser.Scene {
         emitting: false
     });
 
-    this.physics.add.collider(this.player, wallsLayer);
+    if (wallsLayer) {
+        this.physics.add.collider(this.player, wallsLayer);
+    }
     if(this.npc) {
         this.physics.add.collider(this.player, this.npc);
     }

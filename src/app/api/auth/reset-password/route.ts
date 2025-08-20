@@ -2,9 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { hash } from 'bcryptjs';
+import { cookies } from 'next/headers';
 
-// NOTE: This is a placeholder for a password reset flow handled via Supabase Magic Links.
-// The actual token verification and password update happens on a Supabase-hosted page
 // when the user clicks the link in the email. This endpoint is not directly called in that flow.
 // It remains as a reference or for potential future custom flows.
 
@@ -15,19 +14,26 @@ export async function POST(req: NextRequest) {
     if (!token || !newPassword) {
       return NextResponse.json({ message: 'Token and new password are required' }, { status: 400 });
     }
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
 
-    // In a real custom implementation, you would:
-    // 1. Exchange the code/token for a session with Supabase.
-    // const supabase = createClient();
-    // const { data, error } = await supabase.auth.exchangeCodeForSession(token);
-    // 2. If successful, update the user's password.
-    // if (data.user) {
-    //    await supabase.auth.updateUser({ password: newPassword });
-    // }
+    // Exchange the token for a session
+    const { data: sessionData, error: sessionError } = await supabase.auth.exchangeCodeForSession(token);
 
-    console.log(`Password reset action simulated for token: ${token}`);
+    if (sessionError || !sessionData?.user) {
+      console.error('Error exchanging token for session:', sessionError);
+      return NextResponse.json({ message: 'Invalid or expired token' }, { status: 400 });
+    }
 
-    return NextResponse.json({ message: 'Password has been reset successfully. (Simulated)' }, { status: 200 });
+    // Update the user's password
+    const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+
+    if (updateError) {
+      console.error('Error updating user password:', updateError);
+      return NextResponse.json({ message: 'Failed to update password' }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: 'Password has been reset successfully.' }, { status: 200 });
 
   } catch (error) {
     console.error('Reset Password Error:', error);

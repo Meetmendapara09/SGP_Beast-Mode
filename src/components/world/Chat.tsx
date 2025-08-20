@@ -40,7 +40,7 @@ export default function Chat({ messages, onSendMessage }: ChatProps) {
     <div className="flex flex-col h-[40vh] md:h-auto md:flex-grow mt-4 md:mt-0 border-t">
       <h3 className="text-lg font-semibold mb-2 px-4 pt-4">Chat</h3>
       <ScrollArea className="flex-grow">
-        <ScrollArea.Viewport ref={scrollAreaRef} className="h-full w-full">
+        <div ref={scrollAreaRef} className="h-full w-full overflow-auto">
             <div className="space-y-4 px-4 pb-4">
               {messages.map((msg, index) => (
                 <div key={index}>
@@ -51,7 +51,7 @@ export default function Chat({ messages, onSendMessage }: ChatProps) {
                 </div>
               ))}
             </div>
-        </ScrollArea.Viewport>
+        </div>
       </ScrollArea>
       <form onSubmit={handleSubmit} className="p-4 flex items-center gap-2 border-t mt-auto">
         <Input

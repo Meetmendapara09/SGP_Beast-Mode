@@ -58,7 +58,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import Announcements from '@/components/chat/Announcements';
 import { Skeleton } from '@/components/ui/skeleton';
 import { realtimeService, type MessageData } from '@/services/RealtimeService';
-import type * as Ably from 'ably';
+import type { Message, PresenceMessage } from 'ably';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { Label } from '@/components/ui/label';
@@ -96,7 +96,7 @@ export default function ChatPage() {
   const [users, setUsers] = React.useState<ChatUser[]>([]);
   const [channels, setChannels] = React.useState<ChatChannel[]>([]);
   
-  const [onlineUsers, setOnlineUsers] = React.useState<Ably.Types.PresenceMessage[]>([]);
+  const [onlineUsers, setOnlineUsers] = React.useState<PresenceMessage[]>([]);
   const [currentUser, setCurrentUser] = React.useState<ChatUser | null>(null);
   
   const [isLoading, setIsLoading] = React.useState(true);
@@ -175,7 +175,7 @@ export default function ChatPage() {
   React.useEffect(() => {
     if (!currentUser || channels.length === 0) return;
 
-    const handleNewMessage = (ablyMessage: Ably.Types.Message, channelId: string) => {
+    const handleNewMessage = (ablyMessage: Message, channelId: string) => {
         const authorEmail = (ablyMessage.data.author || 'Anonymous');
         const author = authorEmail === currentUser.email ? 'You' : authorEmail;
         const newMessage: ChatMessage = { id: ablyMessage.id, author, text: ablyMessage.data.text, clientId: ablyMessage.clientId };
@@ -186,7 +186,7 @@ export default function ChatPage() {
         }));
     };
 
-    const handleHistory = (history: Ably.Types.Message[], channelId: string) => {
+    const handleHistory = (history: Message[], channelId: string) => {
       const pastMessages: ChatMessage[] = history.map(message => {
         const authorEmail = (message.data.author || 'Anonymous');
         const author = authorEmail === currentUser.email ? 'You' : authorEmail;
@@ -198,8 +198,8 @@ export default function ChatPage() {
       }));
     };
 
-    const handlePresenceUpdate = (presenceMessage?: Ably.Types.PresenceMessage) => {
-       realtimeService.getPresence('pixel-space', (err, members) => {
+    const handlePresenceUpdate = (presenceMessage?: PresenceMessage) => {
+       realtimeService.getPresence('pixel-space', (err: Error | null, members: PresenceMessage[]) => {
            if (!err && members) {
                setOnlineUsers(members);
            }

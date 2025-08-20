@@ -13,7 +13,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { PresenceData } from '@/services/RealtimeService';
-import type * as Ably from 'ably';
+import type { PresenceMessage, Message } from 'ably';
 import { createClient } from '@/lib/supabase/client';
 
 const WHITEBOARD_ID = 'b7e2f7a8-8f6a-4b1e-8e4a-3e4d8f6a3b1e'; // Hardcoded for single whiteboard demo
@@ -103,15 +103,15 @@ export default function WhiteboardPage() {
     loadCanvasState();
     
     // --- Ably Setup ---
-    const handlePresence = (presenceMessage?: Ably.Types.PresenceMessage) => {
-        realtimeService.getPresence('whiteboard', (err, members) => {
+    const handlePresence = (presenceMessage?: PresenceMessage) => {
+        realtimeService.getPresence('whiteboard', (err: Error | null, members: any[]) => {
             if (!err && members) {
                 setOnlineUsers(members.length);
             }
         });
     };
     
-    const handleDraw = (message: Ably.Types.Message) => {
+    const handleDraw = (message: Message) => {
         const data: DrawingData = message.data;
         if(contextRef.current) {
             drawOnCanvas(contextRef.current, data);

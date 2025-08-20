@@ -43,7 +43,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.45.1",
-    "ably": "^2.10.1",
+    "ably": "^2.11.0",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -69,7 +69,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tone": "^15.0.4",
     "use-debounce": "^10.0.1",
-    "vercel": "^46.0.2",
+    "vercel": "^25.2.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {

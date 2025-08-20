@@ -49,8 +49,8 @@ const JitsiMeet: React.FC<JitsiMeetProps> = ({ roomName, onMeetingEnd }) => {
         return;
     }
     
-    // Avoid re-initializing the API if it already exists
-    if (jitsiApiRef.current) {
+    // Avoid re-initializing the API if it already exists and is not disposed
+    if (jitsiApiRef.current && !jitsiApiRef.current.isDisposed()) {
         return;
     }
 

@@ -19,10 +19,9 @@ export interface Survey {
     user_id?: string;
     created_at?: string;
 }
-
-// In a real application, questions and results would be in their own tables and joined.
-// For this project, we'll keep them simplified and hardcoded here to match the survey ID for initial data.
-// Newly created surveys will store their questions/results in the `surveys` table itself as JSONB.
+// In a production application, questions and results would typically reside in separate tables and be joined via relationships.
+// For this project, we are simplifying by hardcoding them here, keyed by survey ID, for initial data.
+// Newly created surveys will store their questions and results directly in the `surveys` table as JSONB columns.
 export const questionsAndResults: Record<string, Pick<Survey, 'questions' | 'results' | 'responses'>> = {
   'q3-employee-satisfaction': {
     responses: 124,
@@ -90,7 +89,7 @@ export async function getAllSurveys(supabase: SupabaseClient): Promise<Survey[]>
 }
 
 export async function getSurveyById(supabase: SupabaseClient, id: string): Promise<Survey | null> {
-    const { data, error }: PostgrestSingleResponse<Survey> = await supabase.from('surveys').select('*').eq('id', id).maybeSingle();
+    const { data, error }: PostgrestSingleResponse<Survey | null> = await supabase.from('surveys').select('*').eq('id', id).maybeSingle();
     
     if (error) {
         console.error("Error fetching survey:", error);

@@ -1,7 +1,6 @@
 
 'use client';
-import Ably, { type RealtimeChannel, type Realtime } from 'ably';
-import type { DrawingData } from '@/models/Whiteboard';
+import Ably, { type RealtimeChannel, type Realtime, type Message, type PresenceMessage, type ChannelOptions, type PaginatedResult } from 'ably';
 
 export interface MessageData {
     author: string;
@@ -48,12 +47,12 @@ export interface WebRTCSignalData {
 }
 
 
-type MessageHandler = (message: Ably.Types.Message, channelId: string) => void;
-type HistoryHandler = (messages: Ably.Types.Message[], channelId: string) => void;
-type PresenceHandler = (presenceMessage: Ably.Types.PresenceMessage) => void;
-type PlayerUpdateHandler = (message: Ably.Types.Message) => void;
+type MessageHandler = (message: Message, channelId: string) => void;
+type HistoryHandler = (messages: Message[], channelId: string) => void;
+type PresenceHandler = (presenceMessage: PresenceMessage) => void;
+type PlayerUpdateHandler = (message: Message) => void;
 type KnockHandler = (data: KnockData) => void;
-type DrawingHandler = (message: Ably.Types.Message) => void;
+type DrawingHandler = (message: Message) => void;
 type ClearHandler = () => void;
 
 
@@ -94,7 +93,7 @@ class RealtimeService {
         
         if (!this.channels.has(finalChannelId)) {
             const isEncrypted = !['pixel-space', 'whiteboard'].some(unencryptedChannel => finalChannelId.startsWith(unencryptedChannel));
-            const channelOptions: Ably.Types.ChannelOptions = {
+            const channelOptions: ChannelOptions = {
                 params: { rewind: '50' }, 
             };
             if(isEncrypted) {
@@ -128,9 +127,9 @@ class RealtimeService {
     }
     
     private async subscribeToAllEvents(channel: RealtimeChannel, channelId: string) {
-        await this.connectionPromise;
-        
-        channel.subscribe((message: Ably.Types.Message) => {
+            await this.connectionPromise;
+            
+            channel.subscribe((message: Message) => {
  if (typeof message.name === 'string') {
  const handlers = this.eventHandlers.get(channelId)?.get(message.name);
  if(handlers) {
@@ -168,7 +167,7 @@ class RealtimeService {
     }
 
     public onMessage(handler: MessageHandler): void { 
-      const genericMessageHandler = (message: Ably.Types.Message, channelId: string) => {
+      const genericMessageHandler = (message: Message, channelId: string) => {
         if (message.name === 'message') {
             handler(message, channelId);
         }
@@ -178,7 +177,7 @@ class RealtimeService {
     public onHistory(handler: HistoryHandler): void { this.subscribeToChannelEvent('__any__', '__history', handler); }
     public onPlayerUpdate(handler: PlayerUpdateHandler): void { this.subscribeToChannelEvent('pixel-space', 'player-update', handler); }
     public onKnock(handler: KnockHandler): void { 
-         const knockWrapper = (message: Ably.Types.Message) => {
+         const knockWrapper = (message: Message) => {
             const data = message.data as KnockData;
             if (typeof data.targetClientId === 'string' && data.targetClientId === this.getClientId()) {
                 handler(data);
@@ -187,7 +186,7 @@ class RealtimeService {
         this.subscribeToChannelEvent('pixel-space', 'knock', knockWrapper);
     }
     public onWebRTCSignal(handler: (data: WebRTCSignalData) => void) {
-        const signalWrapper = (message: Ably.Types.Message) => {
+        const signalWrapper = (message: Message) => {
             const data = message.data as WebRTCSignalData;
             if(data.to === this.getClientId()) {
                 handler(data);
@@ -197,23 +196,25 @@ class RealtimeService {
     }
 
 
-    public onPresenceUpdate(channelId: string, handler: (presenceMessage: Ably.Types.PresenceMessage) => void): void {
+    public onPresenceUpdate(channelId: string, handler: (presenceMessage: PresenceMessage) => void): void {
         const channel = this.getChannel(channelId);
         channel.presence.subscribe(['enter', 'leave', 'update'], handler);
-        channel.presence.get((err: any, members: any) => {
-            if (!err && members) {
-                // Manually trigger handler for existing members
-                members.forEach((member: any) => {
-                    // Create a PresenceMessage object that the handler expects
-                    handler(member as Ably.PresenceMessage);
-                });
-            }
+        channel.presence.get().then((members: PresenceMessage[]) => {
+            // Manually trigger handler for existing members
+            members.forEach((member: PresenceMessage) => {
+                handler(member);
+            });
+        }).catch((err: Error) => {
+            console.error(`Error fetching presence for ${channelId}:`, err);
         });
     }
     
-    public getPresence(channelId: string, callback: Ably.Types.PaginatedResultCallback<Ably.Types.PresenceMessage>): void {
+    public getPresence(channelId: string, callback: (err: Error | null, result?: PaginatedResult<PresenceMessage>) => void): void {
         const channel = this.getChannel(channelId);
-        channel.presence.get(callback);
+        channel.presence.get().then(
+            (result) => callback(null, { items: result } as PaginatedResult<PresenceMessage>),
+            (err) => callback(err)
+        );
     }
 
     public async enterPresence(userData: PresenceData, channelId: string = 'pixel-space') {
@@ -224,15 +225,15 @@ class RealtimeService {
 
     public fetchHistory(channelId: string, type: 'channel' | 'dm' = 'channel') {
         const channel = this.getChannel(channelId, type); 
-         channel.history((err: any, result: { items: any; }) => {
-            if (!err && result.items) {
+         channel.history({}).then((result) => {
+            if (result.items) {
                 const historyHandlers = this.eventHandlers.get('__any__')?.get('__history');
                 if (historyHandlers) {
                     historyHandlers.forEach(handler => handler(result.items, channel.name));
                 }
-            } else if (err) {
-                console.error(`Error fetching history for ${channel.name}:`, err);
             }
+        }).catch((err) => {
+            console.error(`Error fetching history for ${channel.name}:`, err);
         });
     }
     

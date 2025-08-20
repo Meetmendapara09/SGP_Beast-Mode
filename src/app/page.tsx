@@ -12,7 +12,7 @@ import { redirect } from 'next/navigation';
 
 async function IsAuthenticated() {
     const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = createClient(Promise.resolve(cookieStore));
     const { data: { session } } = await supabase.auth.getSession();
     return !!session;
 }

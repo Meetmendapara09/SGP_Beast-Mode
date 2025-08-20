@@ -10,11 +10,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Email is required' }, { status: 400 });
   }
 
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   // Get the redirect URL from the request headers
-  // Supabase sends a magic link, and it needs to know where to redirect the user back to
-  // after they've set their new password.
+  const redirectUrl = req.headers.get('x-redirect-url') || '';
+  if (!redirectUrl) {
+    return NextResponse.json({ message: 'Redirect URL is required' }, { status: 400 });
+  }
   const redirectTo = new URL('/login', req.nextUrl.origin).toString();
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -23,8 +25,9 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     console.error('Password Reset Error:', error);
-    // Even if there's an error (like user not found), we don't want to reveal that.
-    // So we return a generic success message to prevent user enumeration attacks.
+    return NextResponse.json({
+      message: 'If an account with that email exists, a password reset link has been sent.',
+    });
   }
 
   return NextResponse.json({

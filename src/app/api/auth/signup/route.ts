@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
   }
   
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
   // Check for domain restriction

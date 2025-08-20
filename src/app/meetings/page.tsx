@@ -16,7 +16,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 interface Attendee {
     user_id: string;
-    // In a real app, you'd join to get the email/name
+    email: string;
+    name: string;
 }
 
 interface Meeting {

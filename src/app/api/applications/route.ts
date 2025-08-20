@@ -17,12 +17,19 @@ const applicationSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const supabase = createClient(cookieStore);
-    
-    // In a real-world scenario, you might want to protect this endpoint,
-    // but for a public job application, it's typically open.
-    
+
+    // Protect the endpoint by ensuring the user is authenticated
+    const {
+        data: { session },
+        error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session) {
+        return NextResponse.json({ message: 'Unauthorized access' }, { status: 401 });
+    }
+
     const body = await req.json();
     const parseResult = applicationSchema.safeParse(body);
 
@@ -30,9 +37,14 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: 'Invalid data', errors: parseResult.error.flatten() }, { status: 400 });
     }
 
-    // Note: In a real app, file uploads (like resumes) would be handled separately.
-    // The client would upload the file to Supabase Storage first and then send the URL
-    // to this endpoint. For this demo, we'll assume resume_url is a placeholder.
+    // Ensure the resume_url is either a valid URL or an empty string
+    if (parseResult.data.resume_url && parseResult.data.resume_url !== '') {
+        try {
+            new URL(parseResult.data.resume_url);
+        } catch {
+            return NextResponse.json({ message: 'Invalid resume URL' }, { status: 400 });
+        }
+    }
     const { error } = await supabase
         .from('job_applications')
         .insert([

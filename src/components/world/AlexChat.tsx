@@ -78,7 +78,7 @@ export default function AlexChat() {
          <h3 className="text-base font-semibold">Chat with Alex</h3>
       </div>
       <ScrollArea className="flex-grow bg-secondary/30">
-        <ScrollArea.Viewport ref={scrollAreaRef} className="h-full w-full">
+        <div ref={scrollAreaRef} className="h-full w-full">
             <div className="space-y-3 p-3 text-sm">
             {messages.map((msg, index) => (
                 <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -95,7 +95,7 @@ export default function AlexChat() {
                 </div>
             )}
             </div>
-        </ScrollArea.Viewport>
+        </div>
       </ScrollArea>
        <div className="p-2 border-t">
           <Button variant="outline" size="sm" className="w-full" onClick={handleSuggestionClick} disabled={isLoading}>
