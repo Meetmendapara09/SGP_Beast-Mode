@@ -11,7 +11,7 @@ const domainRestrictionSchema = z.object({
 
 // Helper function to check admin role
 async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
-  const supabase = createClient(await cookieStore);
+  const supabase = createClient(cookieStore);
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     throw new Error('Not authenticated');
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
   try {
     const cookieStore = cookies();
     await checkAdmin(cookieStore);
-    const supabase = createClient(await cookieStore);
+    const supabase = createClient(cookieStore);
 
     const { data, error } = await supabase
       .from('settings')
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
 // POST to update the domain restriction setting
 export async function POST(req: NextRequest) {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     await checkAdmin(cookieStore);
     const supabase = createClient(cookieStore);
 

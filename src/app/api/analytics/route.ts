@@ -28,7 +28,7 @@ async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
 }
 
 export async function GET() {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
     // Ensure the user is an admin before proceeding

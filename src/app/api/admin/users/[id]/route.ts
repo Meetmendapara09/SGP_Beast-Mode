@@ -39,7 +39,7 @@ export async function PUT(
   const targetUserId = params.id;
 
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     await checkAdmin(cookieStore);
     const supabase = createClient(cookieStore);
 
@@ -85,7 +85,7 @@ export async function DELETE(
   const targetUserId = params.id;
 
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     await checkAdmin(cookieStore);
     const supabase = createClient(cookieStore);
 

@@ -31,7 +31,7 @@ async function checkAdmin(cookieStore: ReturnType<typeof cookies>) {
 
 export async function POST(req: NextRequest) {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     await checkAdmin(cookieStore);
     
     // We need to create a new client with the service role for inviting users

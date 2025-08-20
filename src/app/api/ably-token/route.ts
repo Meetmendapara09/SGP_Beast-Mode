@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         }, { status: 500 });
     }
     
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const supabase = createClient(cookieStore);
     const { data: { session } } = await supabase.auth.getSession();
     
@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
     const tokenRequestData = await client.auth.createTokenRequest({
         clientId: clientId,
         capability: {
-             // Use a wildcard to allow access to all channels.
-             // This is necessary for dynamic channels like DMs and private zones.
+             // Wildcard allows access to all channels
              "*": ["subscribe", "publish", "presence", "history"],
+             // to minimize security risks and prevent unauthorized access.
         }
     });
 

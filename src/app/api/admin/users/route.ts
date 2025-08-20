@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 
 export async function GET() {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   try {
     const { data: { user: adminUser } } = await supabase.auth.getUser();
