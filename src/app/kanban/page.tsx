@@ -147,7 +147,8 @@ export default function KanbanPage() {
 
   useEffect(() => {
     fetchKanbanData();
-  }, [fetchKanbanData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   const onDragEnd = async (result: DropResult) => {

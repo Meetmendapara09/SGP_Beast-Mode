@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
 import { AnimatedCard } from '@/components/AnimatedCard';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 async function IsAuthenticated() {
     const cookieStore = await cookies();
@@ -19,6 +20,11 @@ async function IsAuthenticated() {
 
 export default async function Home() {
     const isAuthenticated = await IsAuthenticated();
+
+    if (isAuthenticated) {
+      redirect('/dashboard');
+    }
+    
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">

@@ -52,6 +52,6 @@ export const config = {
      * - assets (static assets for phaser)
      * Feel free to add more paths here that should not be authenticated.
      */
-    '/((?!_next/static|_next/image|favicon.ico|assets).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|assets).*)',
   ],
 }
