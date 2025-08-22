@@ -1,4 +1,5 @@
 import type {Config} from 'tailwindcss';
+import tailwindcss from '@tailwindcss/vite'
 
 export default {
   darkMode: ['class'],
@@ -6,9 +7,13 @@ export default {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{html,js,ts,jsx,tsx,css}'
   ],
   theme: {
     extend: {
+       borderColor: {
+        border: 'hsl(var(--border))', 
+      },
       fontFamily: {
         body: ['VT323', 'monospace'],
         headline: ['"Press Start 2P"', 'cursive'],
@@ -85,5 +90,7 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), 
+    tailwindcss()
+  ],
 } satisfies Config;

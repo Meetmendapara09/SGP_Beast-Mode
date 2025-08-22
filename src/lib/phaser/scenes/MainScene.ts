@@ -1,5 +1,5 @@
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import * as Tone from 'tone';
 import type { RealtimeService, PlayerUpdateData } from '@/services/RealtimeService';
 import type { UserRole } from '@/models/User';
