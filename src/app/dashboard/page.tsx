@@ -15,8 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import LogoutButton from '@/components/world/LogoutButton';
 
 async function getUserData() {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
@@ -127,10 +126,10 @@ async function Dashboard() {
                     <p className="text-muted-foreground">What would you like to do today?</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <AnimatedCard id="tour-world">
+                    <AnimatedCard className="game-card" id="tour-world">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
-                                <Users className="text-accent" />
+                                <Users className="text-accent neon-glow" />
                                 <span>Enter the World</span>
                             </CardTitle>
                             <CardDescription>
@@ -139,16 +138,16 @@ async function Dashboard() {
                         </CardHeader>
                         <CardContent>
                            <Link href="/world">
-                             <Button className="w-full">
+                             <Button className="game-button w-full bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground">
                                 Go to World <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
                            </Link>
                         </CardContent>
                     </AnimatedCard>
-                     <AnimatedCard id="tour-chat">
+                     <AnimatedCard className="game-card" id="tour-chat">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-3">
-                               <MessageSquare className="text-accent" />
+                               <MessageSquare className="text-accent neon-glow" />
                                 <span>Team Chat</span>
                             </CardTitle>
                             <CardDescription>
@@ -157,7 +156,7 @@ async function Dashboard() {
                         </CardHeader>
                         <CardContent>
                             <Link href="/chat">
-                                <Button className="w-full">
+                                <Button className="game-button w-full bg-gradient-to-r from-accent to-primary hover:from-primary hover:to-accent text-accent-foreground">
                                     Open Chat <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             </Link>

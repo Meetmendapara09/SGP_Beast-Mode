@@ -529,30 +529,53 @@ export default function ChatPage() {
                         </div>
                     )}
                     {currentMessages.map((msg, index) => (
-                         <div key={msg.id || index} className={cn("flex items-start gap-3", chatDensity === 'compact' ? 'py-1' : 'py-3')}>
-                            <Avatar className={cn(chatDensity === 'compact' ? 'size-8' : 'size-9')}>
+                         <div key={msg.id || index} className={cn(
+                           "chat-message flex items-start gap-3 transition-all duration-200 hover:bg-muted/30 rounded-lg p-3 group", 
+                           chatDensity === 'compact' ? 'py-1' : 'py-3',
+                           msg.author === 'You' ? 'own-message' : ''
+                         )}>
+                            <Avatar className={cn(
+                              chatDensity === 'compact' ? 'size-8' : 'size-9',
+                              "ring-2 ring-border group-hover:ring-primary/50 transition-all duration-200"
+                            )}>
                                 <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="avatar" alt={msg.author} />
-                                <AvatarFallback>{msg.author.charAt(0).toUpperCase()}</AvatarFallback>
+                                <AvatarFallback className={cn(
+                                  "bg-gradient-to-br font-bold text-xs",
+                                  msg.author === 'You' 
+                                    ? 'from-primary to-accent text-primary-foreground' 
+                                    : 'from-secondary to-muted text-secondary-foreground'
+                                )}>{msg.author.charAt(0).toUpperCase()}</AvatarFallback>
                             </Avatar>
-                            <div className="flex-1">
-                                <div className="flex items-baseline gap-2">
-                                    <span className="font-bold">{msg.author}</span>
-                                    <span className="text-xs text-muted-foreground">{new Date().toLocaleTimeString()}</span>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-baseline gap-2 mb-1">
+                                    <span className={cn(
+                                      "font-bold text-sm truncate",
+                                      msg.author === 'You' ? 'text-primary' : 'text-accent'
+                                    )}>{msg.author}</span>
+                                    <span className="text-xs text-muted-foreground shrink-0">
+                                      {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
                                 </div>
-                                <div className={cn("p-2 rounded-lg mt-1", msg.author === 'You' ? 'bg-primary text-primary-foreground' : 'bg-secondary')}>
-                                    <p className="leading-normal">{msg.text}</p>
+                                <div className={cn(
+                                  "p-3 rounded-lg mt-1 border transition-all duration-200 group-hover:border-primary/30", 
+                                  msg.author === 'You' 
+                                    ? 'bg-gradient-to-br from-primary/20 to-accent/10 text-foreground border-primary/30' 
+                                    : 'bg-gradient-to-br from-secondary/50 to-muted/30 text-foreground border-border/50'
+                                )}>
+                                    <p className="leading-relaxed break-words">{msg.text}</p>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </main>
-                <footer className="p-4 border-t shrink-0">
+                <footer className="p-4 border-t border-border/50 shrink-0 bg-gradient-to-r from-background to-muted/20">
                     <div className="relative">
                         <Input 
                             placeholder={`Message ${getActiveConversationName()}`} 
-                            className="w-full pr-32"
+                            className="chat-input w-full pr-32 bg-input/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 placeholder:text-muted-foreground/70"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
+                            maxLength={500}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault();
@@ -590,10 +613,19 @@ export default function ChatPage() {
                                 <Paperclip className="size-5" />
                                 <span className="sr-only">Attach file</span>
                             </Button>
-                             <Button variant="ghost" size="icon" onClick={() => handleSendMessage(message)}>
-                                <Send className="size-5" />
+                             <Button 
+                                className="game-button bg-gradient-to-r from-primary to-accent hover:from-accent hover:to-primary text-primary-foreground" 
+                                size="icon" 
+                                onClick={() => handleSendMessage(message)}
+                                disabled={!message.trim()}
+                            >
+                                <Send className="size-4" />
                                 <span className="sr-only">Send message</span>
                             </Button>
+                        </div>
+                        <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
+                            <span>Press Enter to send</span>
+                            <span>{message.length}/500</span>
                         </div>
                     </div>
                 </footer>

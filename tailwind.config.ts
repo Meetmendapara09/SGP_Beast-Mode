@@ -60,6 +60,12 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        'neon-cyan': 'hsl(var(--neon-cyan))',
+        'neon-pink': 'hsl(var(--neon-pink))',
+        'neon-green': 'hsl(var(--neon-green))',
+        'game-bg': 'hsl(var(--game-bg))',
+        'game-surface': 'hsl(var(--game-surface))',
+        'game-hover': 'hsl(var(--game-hover))',
       },
       borderRadius: {
         lg: 'var(--radius)',

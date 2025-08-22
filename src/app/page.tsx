@@ -11,8 +11,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 async function IsAuthenticated() {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = await createClient();
     const { data: { session } } = await supabase.auth.getSession();
     return !!session;
 }
