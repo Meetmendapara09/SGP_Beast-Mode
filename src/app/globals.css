@@ -83,7 +83,7 @@
 
 @layer base {
   * {
-    @apply border-border/0;
+    @apply border-transparent;
   }
   
   body {
