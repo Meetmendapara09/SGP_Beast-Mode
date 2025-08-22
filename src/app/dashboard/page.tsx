@@ -15,8 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import LogoutButton from '@/components/world/LogoutButton';
 
 async function getUserData() {
-    const cookieStore = await cookies();
-    const supabase = createClient(Promise.resolve(cookieStore));
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
