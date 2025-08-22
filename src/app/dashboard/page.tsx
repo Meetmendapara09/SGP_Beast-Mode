@@ -281,10 +281,10 @@ async function Dashboard() {
     )
 }
 
-export default function DashboardPage() {
-    return (
-        <Suspense fallback={<DashboardSkeleton />}>
-            <Dashboard />
-        </Suspense>
-    );
-}
+// export default function DashboardPage() {
+//     return (
+//         <Suspense fallback={<DashboardSkeleton />}>
+//             <Dashboard />
+//         </Suspense>
+//     );
+// }

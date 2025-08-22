@@ -24,7 +24,7 @@ export default function TourGuide({ isAdmin }: TourGuideProps) {
           title: 'Welcome to SyncroSpace!',
           description: 'This is your dashboard, your central hub for collaboration. Let\'s take a quick tour.',
           side: 'bottom' as const,
-          align: 'start',
+          align: 'start' as const,
         },
       },
       {
@@ -41,7 +41,7 @@ export default function TourGuide({ isAdmin }: TourGuideProps) {
         popover: {
           title: 'Team Chat',
           description: 'Access all your direct messages and team channels here for real-time text communication.',
-          side: "bottom" as const,
+          side: 'bottom' as const,
           align: 'start',
         },
       },
@@ -53,7 +53,7 @@ export default function TourGuide({ isAdmin }: TourGuideProps) {
         popover: {
           title: 'Admin Panel',
           description: 'Since you\'re an admin, you can manage users, view analytics, and access other administrative tools from here.',
-          side: 'top' as const,
+          side: 'bottom' as const,
           align: 'start',
         },
       });
@@ -65,7 +65,7 @@ export default function TourGuide({ isAdmin }: TourGuideProps) {
           title: 'Settings & Logout',
           description: 'You can toggle the theme and log out from your account here. Enjoy exploring SyncroSpace!',
           side: "bottom",
-          align: 'end',
+          align: 'end' as const,
         },
       });
 

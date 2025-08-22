@@ -11,44 +11,15 @@ export default function AudioControl() {
 
     // Reflect the actual state of the audio context
     const handleStateChange = () => {
-      if (Tone.getContext()) {
-        setAudioState(Tone.getContext().state);
-    }
-
-    if (Tone.getContext()) {
-    Tone.getContext().on('statechange', handleStateChange);
-    }
-    const updateState = () => {
         if (Tone.getContext()) {
             setAudioState(Tone.getContext().state);
         }
-      }
-      updateState();
-      
-      const interval = setInterval(updateState, 500);
-
-      return () => clearInterval(interval);
     };
-    useEffect(() => {
-        if (Tone.getContext()) {
-            Tone.getContext().on('statechange', handleStateChange);
-        }
-        const updateState = () => {
-            if (Tone.getContext()) {
-                setAudioState(Tone.getContext().state);
+        const startAudio = async () => {
+            if (!Tone.getContext()) {
+                console.error("Audio context is not available.");
+                return;
             }
-        };
-        updateState();
-
-        const interval = setInterval(updateState, 500);
-
-        return () => clearInterval(interval);
-    }, []);
-    const startAudio = async () => {
-        if (Tone.getContext().state === 'closed') {
-            console.warn("AudioContext is closed and cannot be resumed. Please refresh the page.");
-            return;
-        }
 
         if (Tone.getContext().state !== 'running') {
             try {

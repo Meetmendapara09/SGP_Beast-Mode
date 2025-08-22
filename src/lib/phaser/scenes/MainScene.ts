@@ -1,5 +1,5 @@
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import * as Tone from 'tone';
 import type { RealtimeService, PlayerUpdateData } from '@/services/RealtimeService';
 import type { UserRole } from '@/models/User';
@@ -160,11 +160,9 @@ export class MainScene extends Phaser.Scene {
     // Find objects from Tiled
     const npcObject = map.findObject('Objects', obj => obj.name === "NPC");
     if (npcObject && npcObject.x && npcObject.y) {
-        this.npc = this.add.circle(npcObject.x, npcObject.y, 10, npcColor) as Phaser.Types.Physics.Arcade.GameObjectWithBody & Phaser.GameObjects.Shape;
-        this.physics.add.existing(this.npc);
-        (this.npc.body as Phaser.Physics.Arcade.Body).setImmovable(true);
-        this.physics.add.existing(this.npc);
-        this.npc.body.immovable = true;
+  this.npc = this.add.circle(npcObject.x, npcObject.y, 10, npcColor) as Phaser.Types.Physics.Arcade.GameObjectWithBody & Phaser.GameObjects.Shape;
+  this.physics.add.existing(this.npc);
+  (this.npc.body as Phaser.Physics.Arcade.Body).setImmovable(true);
         this.add.text(npcObject.x - 15, npcObject.y - 30, 'Alex', { font: '14px VT323', color: 'hsl(var(--foreground))' });
         
         const nearZone = this.add.zone(npcObject.x, npcObject.y, 150, 150);
