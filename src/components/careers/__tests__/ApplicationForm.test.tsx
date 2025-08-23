@@ -88,7 +88,9 @@ describe('ApplicationForm', () => {
     
     const emailInput = screen.getByLabelText(/email/i);
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-    fireEvent.blur(emailInput);
+    
+    const submitButton = screen.getByText('Submit Application');
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText('Invalid email address')).toBeInTheDocument();

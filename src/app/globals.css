@@ -1,30 +1,29 @@
 @import "tailwindcss";
 
-
 @layer base {
   :root {
-    /* Updated colors based on project blueprint */
-    --background: 210 17% 95%; /* Very light gray (#F0F2F5) */
+    /* Balanced color scheme with vibrant accents */
+    --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 226 57% 59%; /* Muted indigo (#6678B8) */
+    --primary: 263.4 70% 50.4%; /* Rich purple */
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 39 85% 59%; /* Pale orange (#F7B733) */
+    --accent: 39 85% 59%; /* Vibrant orange for highlights */
     --accent-foreground: 0 0% 0%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 226 57% 59%;
+    --ring: 263.4 70% 50.4%;
     --radius: 0.5rem;
-    --chart-1: 226 57% 59%;
+    --chart-1: 263.4 70% 50.4%;
     --chart-2: 39 85% 59%;
     --chart-3: 180 30% 50%;
     --chart-4: 300 40% 60%;
@@ -32,25 +31,25 @@
   }
 
   .dark {
-    --background: 226 20% 8%; /* Dark version of muted indigo */
+    --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 226 20% 12%;
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
-    --popover: 226 20% 12%;
+    --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 226 57% 65%; /* Slightly lighter for dark mode */
+    --primary: 263.4 70% 50.4%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 39 85% 65%; /* Slightly lighter for dark mode */
+    --accent: 39 85% 65%; /* Slightly brighter for dark mode */
     --accent-foreground: 0 0% 0%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 226 57% 65%;
+    --ring: 263.4 70% 50.4%;
   }
 }
 
@@ -59,11 +58,6 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: 'VT323', monospace;
-  }
-  
-  /* Remove universal border that was causing issues */
-  * {
-    @apply border-0;
   }
   
   /* Ensure proper typography */
