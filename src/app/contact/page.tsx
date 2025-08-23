@@ -20,7 +20,7 @@ export default function ContactPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // In a real app, you would handle form submission here (e.g., send an email or save to a database)
-        console.log({ name, email, message });
+        // Removed console.log to prevent logging of user data
         
         toast({
             title: "Message Sent!",

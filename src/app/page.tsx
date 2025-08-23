@@ -59,36 +59,62 @@ export default async function Home() {
       </header>
       <main className="flex-grow">
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 md:py-24">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4 font-headline leading-tight tracking-wide">
-            A new dimension for team collaboration.
-          </h2>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground mb-8">
-            Step into a 2D virtual office. Boost productivity and connection with spatial chat, collaborative tools, and AI-powered features.
-          </p>
-          <Link href={isAuthenticated ? "/dashboard" : "/signup"}>
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold">
-              Enter SyncroSpace <ArrowRight className="ml-2" />
-            </Button>
-          </Link>
+          <div className="mb-8">
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-6 font-headline leading-tight tracking-wide pixel-shadow">
+              A new dimension for team collaboration.
+            </h2>
+            <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
+              Step into a 2D virtual office. Boost productivity and connection with spatial chat, collaborative tools, and AI-powered features.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href={isAuthenticated ? "/dashboard" : "/signup"}>
+                <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-lg px-8 py-4 glow-effect">
+                  Enter SyncroSpace <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              {!isAuthenticated && (
+                <Link href="/features">
+                  <Button variant="outline" size="lg" className="text-lg px-8 py-4">
+                    Learn More
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
         </section>
 
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="w-full h-64 md:h-96 rounded-xl bg-secondary/50 border-2 border-dashed border-primary/20 flex items-center justify-center overflow-hidden">
-                <Image src="https://placehold.co/1200x400.png" width={1200} height={400} alt="A pixel art virtual office space with avatars" data-ai-hint="pixel art office" className="object-cover w-full h-full"/>
+            <div className="w-full h-64 md:h-96 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-dashed border-primary/30 flex items-center justify-center overflow-hidden relative">
+                <div className="absolute inset-0 bg-grid-primary/10"></div>
+                <div className="relative z-10 text-center">
+                  <div className="text-6xl mb-4">🏢</div>
+                  <p className="text-primary font-headline text-sm">Your Virtual Office Awaits</p>
+                  <p className="text-muted-foreground text-xs mt-2">Connect, collaborate, and create together</p>
+                </div>
+                <Image 
+                  src="https://placehold.co/1200x400.png" 
+                  width={1200} 
+                  height={400} 
+                  alt="A pixel art virtual office space with avatars" 
+                  data-ai-hint="pixel art office" 
+                  className="object-cover w-full h-full opacity-30 absolute inset-0"
+                />
             </div>
         </section>
 
-        <section className="bg-secondary/30">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <section className="bg-gradient-to-b from-secondary/30 to-background py-16 md:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-                <h3 className="text-3xl font-bold font-headline tracking-wide">Everything You Need to Collaborate</h3>
-                <p className="text-muted-foreground mt-2">All-in-one platform for a distributed team.</p>
+                <h3 className="text-3xl md:text-4xl font-bold font-headline tracking-wide mb-4">Everything You Need to Collaborate</h3>
+                <p className="text-muted-foreground mt-2 text-lg">All-in-one platform for a distributed team.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <AnimatedCard>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <AnimatedCard className="hover:glow-effect transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <Users className="text-accent h-6 w-6" />
+                    <div className="p-2 rounded-lg bg-accent/20">
+                      <Users className="text-accent h-6 w-6" />
+                    </div>
                     <span>Virtual World</span>
                   </CardTitle>
                 </CardHeader>
@@ -98,10 +124,12 @@ export default async function Home() {
                   </p>
                 </CardContent>
               </AnimatedCard>
-              <AnimatedCard>
+              <AnimatedCard className="hover:glow-effect transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <Volume2 className="text-accent h-6 w-6" />
+                    <div className="p-2 rounded-lg bg-accent/20">
+                      <Volume2 className="text-accent h-6 w-6" />
+                    </div>
                     <span>Spatial Audio</span>
                   </CardTitle>
                 </CardHeader>
@@ -111,10 +139,12 @@ export default async function Home() {
                   </p>
                 </CardContent>
               </AnimatedCard>
-              <AnimatedCard>
+              <AnimatedCard className="hover:glow-effect transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <MessageSquare className="text-accent h-6 w-6" />
+                    <div className="p-2 rounded-lg bg-accent/20">
+                      <MessageSquare className="text-accent h-6 w-6" />
+                    </div>
                     <span>Team Chat</span>
                   </CardTitle>
                 </CardHeader>
@@ -124,10 +154,12 @@ export default async function Home() {
                   </p>
                 </CardContent>
               </AnimatedCard>
-               <AnimatedCard>
+               <AnimatedCard className="hover:glow-effect transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <Video className="text-accent h-6 w-6" />
+                    <div className="p-2 rounded-lg bg-accent/20">
+                      <Video className="text-accent h-6 w-6" />
+                    </div>
                     <span>Video Meetings</span>
                   </CardTitle>
                 </CardHeader>
@@ -137,10 +169,12 @@ export default async function Home() {
                   </p>
                 </CardContent>
               </AnimatedCard>
-              <AnimatedCard>
+              <AnimatedCard className="hover:glow-effect transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <KanbanSquare className="text-accent h-6 w-6" />
+                    <div className="p-2 rounded-lg bg-accent/20">
+                      <KanbanSquare className="text-accent h-6 w-6" />
+                    </div>
                     <span>Task Management</span>
                   </CardTitle>
                 </CardHeader>
@@ -150,10 +184,12 @@ export default async function Home() {
                   </p>
                 </CardContent>
               </AnimatedCard>
-              <AnimatedCard>
+              <AnimatedCard className="hover:glow-effect transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <Shapes className="text-accent h-6 w-6" />
+                    <div className="p-2 rounded-lg bg-accent/20">
+                      <Shapes className="text-accent h-6 w-6" />
+                    </div>
                     <span>Whiteboards</span>
                   </CardTitle>
                 </CardHeader>
@@ -163,10 +199,12 @@ export default async function Home() {
                   </p>
                 </CardContent>
               </AnimatedCard>
-              <AnimatedCard>
+              <AnimatedCard className="hover:glow-effect transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <ClipboardList className="text-accent h-6 w-6" />
+                    <div className="p-2 rounded-lg bg-accent/20">
+                      <ClipboardList className="text-accent h-6 w-6" />
+                    </div>
                     <span>Surveys & Polls</span>
                   </CardTitle>
                 </CardHeader>
@@ -176,10 +214,12 @@ export default async function Home() {
                   </p>
                 </CardContent>
               </AnimatedCard>
-               <AnimatedCard>
+               <AnimatedCard className="hover:glow-effect transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
-                    <BarChart2 className="text-accent h-6 w-6" />
+                    <div className="p-2 rounded-lg bg-accent/20">
+                      <BarChart2 className="text-accent h-6 w-6" />
+                    </div>
                     <span>Analytics</span>
                   </CardTitle>
                 </CardHeader>
