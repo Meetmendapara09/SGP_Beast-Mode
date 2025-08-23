@@ -29,10 +29,12 @@ describe('AboutUsPage', () => {
   it('renders the "Meet the Team" section', () => {
     render(<AboutUsPage />);
     expect(screen.getByRole('heading', { name: /meet the team/i })).toBeInTheDocument();
-    expect(screen.getByText('Alice')).toBeInTheDocument();
-    expect(screen.getByText('Bob')).toBeInTheDocument();
-    expect(screen.getByText('Charlie')).toBeInTheDocument();
-    expect(screen.getByText('David')).toBeInTheDocument();
+    expect(screen.getByText('Priyanshi Shekhada')).toBeInTheDocument();
+    expect(screen.getByText('Dhruvi Ardeshana')).toBeInTheDocument();
+    expect(screen.getByText('Meet Mendapara')).toBeInTheDocument();
+    expect(screen.getByText('CEO (Chief Executive Officer)')).toBeInTheDocument();
+    expect(screen.getByText('COO (Chief Operating Officer)')).toBeInTheDocument();
+    expect(screen.getByText('CTO (Chief Technical Officer)')).toBeInTheDocument();
   });
 
   it('contains a link back to the dashboard', () => {
