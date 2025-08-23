@@ -9,17 +9,19 @@ import { useRouter } from 'next/navigation';
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
+
+const mockToast = jest.fn();
 jest.mock('@/hooks/use-toast', () => ({
   useToast: () => ({
-    toast: jest.fn(),
+    toast: mockToast,
   }),
 }));
+
 global.fetch = jest.fn();
 
 describe('LoginForm', () => {
   const mockPush = jest.fn();
   const mockRefresh = jest.fn();
-  const { toast } = useToast();
 
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({
@@ -27,7 +29,7 @@ describe('LoginForm', () => {
       refresh: mockRefresh,
     });
     (fetch as jest.Mock).mockClear();
-    (toast as jest.Mock).mockClear();
+    mockToast.mockClear();
     mockPush.mockClear();
     mockRefresh.mockClear();
   });
@@ -68,7 +70,7 @@ describe('LoginForm', () => {
       });
     });
     
-    expect(toast).toHaveBeenCalledWith({
+    expect(mockToast).toHaveBeenCalledWith({
         title: 'Login Successful',
         description: "Welcome back! You're being redirected.",
     });
@@ -93,7 +95,7 @@ describe('LoginForm', () => {
         expect(fetch).toHaveBeenCalled();
     });
 
-    expect(toast).toHaveBeenCalledWith({
+    expect(mockToast).toHaveBeenCalledWith({
       variant: 'destructive',
       title: 'Login Failed',
       description: 'Invalid credentials',

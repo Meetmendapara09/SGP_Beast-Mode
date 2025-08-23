@@ -6,9 +6,10 @@ import { UserData } from '@/app/admin/page';
 import { useToast } from '@/hooks/use-toast';
 
 // Mock the useToast hook
+const mockToast = jest.fn();
 jest.mock('@/hooks/use-toast', () => ({
   useToast: () => ({
-    toast: jest.fn(),
+    toast: mockToast,
   }),
 }));
 
@@ -31,6 +32,7 @@ describe('DeleteUserConfirmationDialog', () => {
     (fetch as jest.Mock).mockClear();
     setIsOpen.mockClear();
     onUserUpdate.mockClear();
+    mockToast.mockClear();
   });
 
   it('renders the dialog with user email when open', () => {
@@ -80,8 +82,6 @@ describe('DeleteUserConfirmationDialog', () => {
       ok: true,
       json: () => Promise.resolve({ message: 'User deleted' }),
     });
-    
-    const { toast } = useToast();
 
     render(
       <DeleteUserConfirmationDialog
@@ -102,7 +102,7 @@ describe('DeleteUserConfirmationDialog', () => {
 
     expect(onUserUpdate).toHaveBeenCalledTimes(1);
     expect(setIsOpen).toHaveBeenCalledWith(false);
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'User Deleted' }));
+    expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({ title: 'User Deleted' }));
   });
   
     it('shows an error toast if the API call fails', async () => {
@@ -110,8 +110,6 @@ describe('DeleteUserConfirmationDialog', () => {
       ok: false,
       json: () => Promise.resolve({ message: 'Server error' }),
     });
-
-    const { toast } = useToast();
 
     render(
       <DeleteUserConfirmationDialog
@@ -129,7 +127,7 @@ describe('DeleteUserConfirmationDialog', () => {
     });
 
     expect(onUserUpdate).not.toHaveBeenCalled();
-    expect(toast).toHaveBeenCalledWith(expect.objectContaining({
+    expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
         variant: 'destructive',
         title: 'Deletion Failed',
         description: 'Server error'

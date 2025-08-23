@@ -11,7 +11,9 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "postinstall": "patch-package",
-    "test": "jest --watch"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@genkit-ai/firebase": "^1.16.1",
@@ -101,6 +103,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.12",
     "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.20.4",
     "typescript": "^5"
   }
